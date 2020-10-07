@@ -43,7 +43,7 @@ class NovaDependencyContainer extends Field
      * @param $value
      * @return $this
      */
-    public function dependsOn($field, $value)
+    public function dependsOn($field, ...$value)
     {
         return $this->withMeta([
             'dependencies' => array_merge($this->meta['dependencies'], [
@@ -185,7 +185,6 @@ class NovaDependencyContainer extends Field
                     continue;
                 }
             }
-
         }
     }
 
