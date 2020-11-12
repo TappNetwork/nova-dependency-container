@@ -51,10 +51,19 @@
 							if (attribute === 'selectedResource') {
 								value = (value && value.value) || null;
 							}
+							if (value && component.field.component === 'boolean-group-field') {
+							  let valueAccumulator = [];
+							  for (let currValue of value) {
+							    if(currValue.checked) {
+							      valueAccumulator.push(currValue.name);
+                  }
+                }
+							  value = valueAccumulator;
+              }
 							this.dependencyValues[component.field.attribute] = value;
 							// @todo: change value as argument for `updateDependencyStatus`
 							this.updateDependencyStatus()
-						}, {immediate: true});
+						}, {immediate: true, deep: true});
 
 						// @todo: move to initial state
 						// @note quick-fix for issue #88
@@ -133,7 +142,18 @@
 					}
 
 					if (dependency.hasOwnProperty('value')) {
-					  this.dependenciesSatisfied = dependency.value.contains(dependencyValue);
+					  if(Array.isArray(dependency.value)) {
+					    if(Array.isArray(dependencyValue)) {
+                const intersection = dependency.value.filter(value => dependencyValue.includes(value));
+                this.dependenciesSatisfied = intersection.length > 0;
+              }
+					    else {
+                this.dependenciesSatisfied = dependency.value.includes(dependencyValue);
+              }
+            }
+					  else {
+					    this.dependenciesSatisfied = dependencyValue == dependencyValue;
+            }
             return;
 					}
 				}
